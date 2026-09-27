@@ -15,4 +15,7 @@ public interface ServerRepository extends JpaRepository<Server, Long>{
 	
 	@Query("SELECT DISTINCT i.server from Ip i WHERE i.pack.user.id= :userId ")
 	List<Server>findServersByUserId(@Param("userId") Long userId);
+	
+	@Query("SELECT DISTINCT i.server from Ip i WHERE i.pack.id= :packId")
+	List<Server>findServersByPackId(@Param("packId") Long packId);
 }

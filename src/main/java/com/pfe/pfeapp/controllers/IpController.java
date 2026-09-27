@@ -1,8 +1,10 @@
 package com.pfe.pfeapp.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfe.pfeapp.dto.ResetCumulSentDto;
 import com.pfe.pfeapp.entity.Ip;
 import com.pfe.pfeapp.service.IpService;
 
@@ -55,4 +58,34 @@ public class IpController {
 	}
 	
 	
+	//ips by pack
+	@GetMapping("/pack/{idPack}")
+	public List<Ip>getIpsByPack(@PathVariable Long idPack){
+		return ipService.getIpsByPack(idPack);
+	}
+	
+	
+	
+	// reset cumulsent control:
+	@PostMapping("/reset")
+	public ResponseEntity<String> resetNbrSent(@RequestBody ResetCumulSentDto bodyDto) {
+		
+		try {
+			
+			/*
+			if(bodyDto.getIps() == null || bodyDto.getIps().isBlank()) {
+			    throw new RuntimeException("Liste vide");
+			}
+			*/
+			
+			ipService.resetNbrSent(bodyDto.getIps());
+			return ResponseEntity.ok("Reset effectué avec succés");
+			
+		} catch (RuntimeException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("Erreur Serveur!");
+		}
+	}
+
 }

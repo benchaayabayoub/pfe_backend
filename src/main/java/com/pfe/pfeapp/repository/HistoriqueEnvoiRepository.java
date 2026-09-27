@@ -12,7 +12,7 @@ public interface HistoriqueEnvoiRepository extends JpaRepository<HistoriqueEnvoi
 	//List<HistoriqueEnvoi> findByIpIdOrderByDateAsc(Long ipId);
 	List<HistoriqueEnvoi> findByIpIdOrderByDateAsc(Long ipId);
 	
-	List<HistoriqueEnvoi> findByIpId(Long ipId);  // pour quand on supprime Team , historique des ips aussi on doit la supprimer
+	List<HistoriqueEnvoi> findByIpId(Long ipId);  // pour quand on supprime Team ou plan , historique des ips aussi on doit la supprimer
 	
 	
 }

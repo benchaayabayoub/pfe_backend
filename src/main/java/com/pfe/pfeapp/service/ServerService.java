@@ -36,6 +36,13 @@ public class ServerService {
 		}
 	}
 	
+	
+	public List<Server>getServersByPack(Long packId){
+		return serverRepo.findServersByPackId(packId);
+	}
+	
+	
+	
 	public Server getById(Long id) {
 		return serverRepo.findById(id).orElseThrow(()->new RuntimeException("Server introuvable!"));
 	}

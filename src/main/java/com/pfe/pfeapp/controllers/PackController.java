@@ -3,6 +3,7 @@ package com.pfe.pfeapp.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +29,15 @@ public class PackController {
 	
 	
 	@PostMapping
-	public Pack create(@Valid @RequestBody PackDto packDto) {
-		return packService.createWithIps(packDto);
+	public ResponseEntity<String> create(@Valid @RequestBody PackDto packDto) {
+		try {
+			packService.createWithIps(packDto);
+			return ResponseEntity.ok ("Pack crée correctement");
+		}catch (RuntimeException e) {
+			return ResponseEntity.badRequest().body(e.getMessage().toString());
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("Erreur serveur!");
+		}
 	}
 	
 	

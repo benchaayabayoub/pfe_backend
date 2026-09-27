@@ -46,8 +46,8 @@ public class AuthService {
         User user = new User();
         user.setNomComplet(request.getNomComplet());
         user.setUsernameTelegram(request.getUsernameTelegram());
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // mot de passe haché
-        user.setRole(Role.USER); // rôle forcé à USER, jamais reçu du client
+        user.setPassword(passwordEncoder.encode(request.getPassword())); 
+        user.setRole(Role.USER);
 
         userRepository.save(user);
     }

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.pfe.pfeapp.entity.HistoriqueEnvoi;
 import com.pfe.pfeapp.entity.Ip;
+import com.pfe.pfeapp.entity.Role;
+import com.pfe.pfeapp.entity.User;
 import com.pfe.pfeapp.repository.HistoriqueEnvoiRepository;
 import com.pfe.pfeapp.repository.IpRepository;
 
@@ -19,8 +21,13 @@ public class HistoriqueEnvoiService {
 	@Autowired
 	private HistoriqueEnvoiRepository historiqueEnvoiRepo;
 	
+	@Autowired
+	private IpService ipService;
 	
 	public void loadHistorique(String texte) {
+		
+		User user=ipService.getCurrentUser();
+		
 		String[] lignes=texte.split("\\r?\\n");
 		
 		for(String ligne:lignes) {
@@ -37,8 +44,14 @@ public class HistoriqueEnvoiService {
 			String [] valeurs=parts[1].split(";");
 			
 			Ip ip=ipRepo.findByAdresse(adresseIp).orElseThrow(()->
-			new RuntimeException("Ip introuvable!"+adresseIp));
+			new RuntimeException("Ip: "+adresseIp+" introuvable "));
 			
+			
+			boolean ownerIp=ip.getPack().getUser().getId().equals(user.getId());
+			
+			if(user.getRole() != Role.ADMIN && !ownerIp) {
+				throw new RuntimeException("Ip appartient à un autre utilisateur: "+adresseIp);
+			}
 			
 			
 			long totalJour=0;

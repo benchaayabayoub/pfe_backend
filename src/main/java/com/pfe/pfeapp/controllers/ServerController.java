@@ -34,6 +34,11 @@ public class ServerController {
 		return serverService.getAll();
 	}
 	
+	@GetMapping("/pack/{idPack}")
+	public List<Server>getServersByPack(@PathVariable Long idPack){
+		return serverService.getServersByPack(idPack);
+	}
+	
 	
 	@GetMapping("/{id}")
 	public Server getById(@PathVariable Long id) {

@@ -60,6 +60,8 @@ public class PackService {
 		Team team= teamRepo.findById(requestCreate.getTeamId()).orElseThrow(()->
 		new RuntimeException("Team introuvable"));
 		
+		
+		//check if plan choisi:
 		Plan plan=planRepo.findById(requestCreate.getPlanId()).orElseThrow(()->
 		new RuntimeException("Plan introuvable"));
 		

@@ -3,6 +3,7 @@ package com.pfe.pfeapp.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +28,16 @@ public class PlanController {
 	
 	
 	@PostMapping
-	public PlanResponseDto create(@Valid @RequestBody PlanDto planDto) {
-		return planService.createPlan(planDto);
+	public ResponseEntity<String> create(@Valid @RequestBody PlanDto planDto) {
+		try {
+			planService.createPlan(planDto);
+			return ResponseEntity.ok("Plan crée correctement");
+		} catch (RuntimeException e) {
+			return ResponseEntity.badRequest().body((e.getMessage()));
+		} catch(Exception e) {
+			return ResponseEntity.status(500).body("Erreur Serveur!");
+		}
+		
 	}
 	
 	@GetMapping
@@ -38,8 +47,15 @@ public class PlanController {
 	
 	
 	@DeleteMapping("/{id}")
-	public void deletePlan(@PathVariable Long id) {
-		planService.deletePlan(id);
+	public ResponseEntity<String> deletePlan(@PathVariable Long id) {
+		try {
+			planService.deletePlan(id);
+			return ResponseEntity.ok("Plan supprimé");
+		} catch (RuntimeException e) {
+			return ResponseEntity.badRequest().body(e.getMessage().toString());
+		} catch (Exception e){
+			return ResponseEntity.status(500).body("Erreur serveur!");
+		}
 	}
 	
 

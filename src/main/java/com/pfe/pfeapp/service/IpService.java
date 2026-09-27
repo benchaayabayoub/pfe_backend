@@ -12,6 +12,8 @@ import com.pfe.pfeapp.entity.User;
 import com.pfe.pfeapp.repository.IpRepository;
 import com.pfe.pfeapp.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class IpService {
 
@@ -24,7 +26,7 @@ public class IpService {
 	public Ip create(Ip ip) {
 		return ipRepo.save(ip);
 	}
-	
+	//get All ips:
 	public List<Ip> getAll(){
 		
 		User user=getCurrentUser();
@@ -36,6 +38,14 @@ public class IpService {
 			return ipRepo.findIpsByUserId(user.getId());
 		}
 	}
+	
+	
+	public List<Ip>getIpsByPack(Long packId){
+		return ipRepo.findByPackId(packId);
+	}
+	
+	
+	
 	
 	public Ip getById(Long id) {
 		return ipRepo.findById(id).orElseThrow(()->new RuntimeException("Ip introuvable!"));
@@ -75,6 +85,42 @@ public class IpService {
 		ipRepo.deleteById(id);
 	}
 	
+	
+	
+	// methode reset cumulsent
+	
+	@Transactional
+	public void resetNbrSent(String ipsTxt) {
+		
+		User user=getCurrentUser();
+		
+		String [] adresses=ipsTxt.split("\\r?\\n");
+		
+		for(String adresse:adresses) {
+			String cleanAdresse=adresse.trim();
+			
+			/*
+			if(!cleanAdresse.matches("\\d+")) {
+		        throw new RuntimeException("Seulement des nombres !");
+		    }
+		    */
+			
+			if(cleanAdresse.isEmpty()) continue;
+			
+			Ip ip=ipRepo.findByAdresse(cleanAdresse).orElseThrow(()->new RuntimeException("Ip introuvable: "+cleanAdresse));
+			
+			boolean ownerIp=ip.getPack().getUser().getId().equals(user.getId());
+			
+			if(user.getRole() != Role.ADMIN && !ownerIp ) {
+				throw new RuntimeException("Ip appartient à un autre utilisateur " + cleanAdresse);
+		        
+			}
+			
+			
+			ip.setCumulSent(0);
+			ipRepo.save(ip);
+		}
+	}
 	
 	
 	public User getCurrentUser() {
